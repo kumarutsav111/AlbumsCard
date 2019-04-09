@@ -8,38 +8,40 @@
 
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
-import axios from 'axios'
-
-
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n'
-});
+import axios from 'axios';
 
 type Props = {};
 export default class App extends Component<Props> {
   constructor(props){
     super(props);
     this.state = {
-      responseData: ''
+      responseData: []
     }
   }
   componentDidMount(){
     var axios = require('axios');
 
-    axios.all([
-      axios.get('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&date=2017-08-03'),
-      axios.get('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&date=2017-08-02')
-    ]).then(axios.spread((response1, response2) => {
-      console.log(response1.data.url);
-      console.log(response2.data.url);
-      this.setState({
-        responseData: response1.data
-      })
-    })).catch(error => {
-      console.log(error);
-    });
+    axios.get('https://rallycoding.herokuapp.com/api/music_albums')
+    .then(response => {
+      this.setState({responseData: response.data})
+    })
+    .catch(error => {
+      console.error(error);
+      
+    })
+    
+    // axios.all([
+    //   axios.get('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&date=2017-08-03'),
+    //   axios.get('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&date=2017-08-02')
+    // ]).then(axios.spread((response1, response2) => {
+    //   console.log(response1.data.url);
+    //   console.log(response2.data.url);
+    //   this.setState({
+    //     responseData: response1.data
+    //   })
+    // })).catch(error => {
+    //   console.log(error);
+    // });
     // fetch('https://jsonplaceholder.typicode.com/posts/1', {
     //   method: 'GET'
     // })
@@ -63,19 +65,17 @@ export default class App extends Component<Props> {
 //   });
   }
   lapsList() {
+    return this.state.responseData.map(albums => {
       return (
-        <View><Text>{this.state.responseData.url}</Text></View>
+        <View><Text>{albums.title}</Text></View>
       )
+    })
 }
   render() {
     
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
         {this.lapsList()}
-        {/* <Text style={styles.instructions}>{this.state.data.body}</Text> */}
       </View>
     );
   }
